@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCycle AI - Climate & Shelter Platform</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- YENİ TEMA: SOFT YEŞİL & TURUNCU --- */
+        :root {
+            --primary-green: #4A7C59; /* Soft Adaçayı Yeşili */
+            --light-green: #E8F0EA;
+            --hover-green: #3B6347;
+
+            --primary-orange: #F4A261; /* Sıcak Soft Turuncu */
+            --light-orange: #FDF3EB;
+            --hover-orange: #E78A43;
+
+            --white: #FFFFFF;
+            --text-dark: #333333;
+            --text-gray: #6B7280;
+            --bg-gray: #F9FAFB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SİDEBAR TASARIMI --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(74, 124, 89, 0.15);
+            z-index: 10;
+            position: relative;
+        }
+
+        .logo-area {
+            padding: 35px 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .logo-area h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--primary-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logo-area p {
+            font-size: 13px;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 16px 25px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        /* Pati İkonu Yer Tutucu */
+        .nav-item::before {
+            content: '';
+            width: 18px;
+            height: 18px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 512 512" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M226.5 92.9c14.3 42.9-.3 86.4-32.6 96.8s-70.3-15.8-84.6-58.7.3-86.4 32.6-96.8 70.3 15.8 84.6 58.7zm138.8-58.7c-14.3-42.9-52.3-69.1-84.6-58.7s-46.9 53.9-32.6 96.8 52.3 69.1 84.6 58.7 46.9-53.9 32.6-96.8zm116.1 123.6c-9.7-41.5-45.7-62.8-80.4-47.5-34.7 15.3-54.9 61.5-45.2 103 9.7 41.5 45.7 62.8 80.4 47.5 34.7-15.3 54.9-61.5 45.2-103zm-162.7 85.3c-23.7-21.7-56-11.4-78.5-7.7-18.7 3.1-41.9 6.2-64 1-27-6.5-62-36.4-86.6-43.2-34-9.3-70.9 9.8-83.3 43-12.7 34 8 74.3 35.8 98.7 31 27 75.3 43.1 113.8 61.8 19 9.2 40 19.3 62 26 25 7.6 55.4 12.3 84.6 9.8 45.4-3.8 92.5-23.8 116.5-61.4 19.8-31 16-72.2-6.5-100-11-13.8-24.9-24.3-41-31.5-14.7-6.5-32.2-5.7-46.8-5.3-25.1.8-51.1 5.9-66.2 8.3-5.3.8-10.9 1.1-16 1-13.2-.3-24.9-6.4-32.7-16.7z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--hover-green);
+            color: var(--primary-orange);
+            padding-left: 30px;
+        }
+
+        .nav-item:hover::before, .nav-item.active::before {
+            opacity: 1;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 512 512" fill="%23F4A261" xmlns="http://www.w3.org/2000/svg"><path d="M226.5 92.9c14.3 42.9-.3 86.4-32.6 96.8s-70.3-15.8-84.6-58.7.3-86.4 32.6-96.8 70.3 15.8 84.6 58.7zm138.8-58.7c-14.3-42.9-52.3-69.1-84.6-58.7s-46.9 53.9-32.6 96.8 52.3 69.1 84.6 58.7 46.9-53.9 32.6-96.8zm116.1 123.6c-9.7-41.5-45.7-62.8-80.4-47.5-34.7 15.3-54.9 61.5-45.2 103 9.7 41.5 45.7 62.8 80.4 47.5 34.7-15.3 54.9-61.5 45.2-103zm-162.7 85.3c-23.7-21.7-56-11.4-78.5-7.7-18.7 3.1-41.9 6.2-64 1-27-6.5-62-36.4-86.6-43.2-34-9.3-70.9 9.8-83.3 43-12.7 34 8 74.3 35.8 98.7 31 27 75.3 43.1 113.8 61.8 19 9.2 40 19.3 62 26 25 7.6 55.4 12.3 84.6 9.8 45.4-3.8 92.5-23.8 116.5-61.4 19.8-31 16-72.2-6.5-100-11-13.8-24.9-24.3-41-31.5-14.7-6.5-32.2-5.7-46.8-5.3-25.1.8-51.1 5.9-66.2 8.3-5.3.8-10.9 1.1-16 1-13.2-.3-24.9-6.4-32.7-16.7z"/></svg>');
+        }
+
+        /* --- SİDEBAR ALT YUVA & SİLÜET TASARIMI --- */
+        .sidebar-footer {
+            padding: 20px;
+            background-color: rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .shelter-graphic {
+            width: 120px;
+            height: 100px;
+            margin: 0 auto 10px;
+            display: block;
+        }
+
+        .sidebar-footer p {
+            font-size: 11px;
+            color: var(--light-green);
+            line-height: 1.4;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- ANA İÇERİK ALANI --- */
+        .main-content {
+            flex: 1;
+            background-color: var(--bg-gray);
+            padding: 40px;
+            overflow-y: auto;
+            background-image: radial-gradient(var(--light-orange) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .page-section { display: none; animation: fadeIn 0.5s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-green);
+        }
+        .page-header h2 { color: var(--primary-green); font-size: 26px; font-weight: 700; }
+        .page-header p { color: var(--text-gray); font-size: 14px; margin-top: 5px; }
+
+        /* --- UPLOAD EKRANI --- */
+        .upload-area {
+            border: 2px dashed var(--primary-orange);
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(244, 162, 97, 0.05);
+        }
+        .upload-area:hover { background-color: var(--light-orange); border-color: var(--hover-orange); transform: scale(1.01); }
+        .upload-icon { font-size: 48px; margin-bottom: 15px; }
+        .upload-area h3 { color: var(--primary-orange); font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+
+        .ai-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid var(--primary-green);
+            overflow: hidden;
+        }
+        .ai-card-header { background-color: var(--light-green); padding: 16px 24px; border-bottom: 1px solid rgba(74, 124, 89, 0.1); }
+        .ai-card-header h3 { color: var(--primary-green); font-size: 16px; font-weight: 600; }
+        .ai-card-content { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .stat-label { font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 6px; font-weight: 600;}
+        .stat-value { font-size: 16px; font-weight: 500; color: var(--text-dark); }
+        .highlight-green { color: var(--primary-green); font-weight: 700; }
+        .badge-safe { background-color: var(--light-orange); color: var(--hover-orange); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; width: fit-content; }
+
+        /* Örnek ürün (mont) önizleme + karbon paneli */
+        .ai-card-body { display: grid; grid-template-columns: 240px 1fr; }
+        .item-preview { background-color: var(--light-orange); padding: 24px 16px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid rgba(74, 124, 89, 0.1); }
+        .item-preview svg { width: 100%; max-width: 190px; height: auto; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.08)); }
+        .item-caption { margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--primary-green); text-align: center; }
+        .ai-details { display: flex; flex-direction: column; }
+        .ai-card-body .ai-card-content { padding: 24px 24px 16px; }
+        .ai-stat { display: flex; flex-direction: column; align-items: flex-start; }
+        .carbon-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 24px; }
+        .carbon-box { background-color: var(--light-green); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 2px; border-top: 3px solid var(--primary-orange); }
+        .carbon-num { font-size: 22px; font-weight: 700; color: var(--primary-orange); line-height: 1.3; }
+        .carbon-num.green { color: var(--primary-green); }
+        .carbon-num.small { font-size: 14px; color: var(--primary-green); }
+        .carbon-sub { font-size: 11px; color: var(--text-gray); }
+        .estimate-note { font-size: 11px; color: var(--text-gray); padding: 12px 24px 18px; font-style: italic; }
+
+        /* --- DASHBOARD VE ÜRÜN GALERİSİ --- */
+        .dashboard-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background-color: var(--white); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 4px solid var(--primary-orange); transition: transform 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-icon { font-size: 32px; margin-bottom: 12px; }
+        .stat-title { color: var(--text-gray); font-size: 13px; text-transform: uppercase; margin-bottom: 8px; font-weight: 600;}
+        .stat-number { color: var(--primary-green); font-size: 32px; font-weight: 700; }
+
+        /* Örnek Ürünler Galerisi */
+        .gallery-section {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            margin-bottom: 40px;
+        }
+        .gallery-title { color: var(--primary-green); margin-bottom: 20px; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px;}
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .gallery-card {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid var(--light-green);
+        }
+        .gallery-img { width: 100%; height: 260px; object-fit: cover; object-position: center; display: block; }
+        .gallery-tag {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(74, 124, 89, 0.9);
+            color: white;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* --- ÖDÜLLER EKRANI --- */
+        .balance-container { background-color: var(--primary-orange); color: var(--white); padding: 16px 24px; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3);}
+        .rewards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .reward-card { background-color: var(--white); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; transition: transform 0.3s ease; border: 1px solid var(--light-orange);}
+        .reward-card:hover { transform: translateY(-5px); border-color: var(--primary-orange);}
+        .reward-logo { width: 60px; height: 60px; background-color: var(--light-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+        .reward-title { font-size: 15px; font-weight: 700; color: var(--primary-green); margin-bottom: 8px; }
+        .reward-desc { font-size: 13px; color: var(--text-gray); margin-bottom: 20px; flex-grow: 1; }
+        .reward-btn { background-color: var(--primary-green); color: var(--white); border: none; padding: 12px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; width: 100%; }
+        .reward-btn:hover { background-color: var(--hover-green); transform: translateY(-2px);}
+        .reward-btn-outline { background-color: var(--white); color: var(--primary-green); border: 2px solid var(--primary-green); }
+        .reward-btn-outline:hover { background-color: var(--light-green); }
+
+        /* Sponsor şirketler - sağ alt */
+        .sponsors-wrap { display: flex; justify-content: flex-end; margin-top: 40px; }
+        .sponsors-box { background-color: var(--white); border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 4px solid var(--primary-green); max-width: 420px; }
+        .sponsors-title { color: var(--primary-green); font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+        .sponsor-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .sponsor-chip { background-color: var(--light-orange); color: var(--hover-orange); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+        /* --- AKILLI ROTA & PATİ HARİTASI --- */
+        .carbon-alert { background-color: var(--light-green); border-left: 6px solid var(--primary-green); color: var(--hover-green); padding: 16px 24px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; font-weight: 500; font-size: 14px; }
+        .carbon-ratio-badge { background-color: var(--primary-orange); color: var(--white); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .routing-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; }
+        .map-card, .route-list-card { background-color: var(--white); border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
+        .card-section-title { color: var(--primary-green); font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;}
+
+        .map-placeholder {
+            flex: 1; min-height: 310px; background-color: #EEF4F0;
+            border-radius: 12px; border: 2px solid var(--light-green); position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; overflow: hidden;
+        }
+        .map-badge { background-color: var(--white); color: var(--primary-orange); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; width: fit-content; box-shadow: 0 4px 10px rgba(0,0,0,0.08); z-index: 2; }
+        .map-svg { width: 100%; height: 200px; border-radius: 10px; }
+        .map-footer-stats { background-color: rgba(255,255,255,0.95); padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+
+        .route-timeline { list-style: none; position: relative; padding-left: 28px; margin-bottom: 20px; flex: 1; }
+        .route-timeline::before { content: ''; position: absolute; left: 9px; top: 8px; bottom: 16px; width: 2px; background-color: var(--light-orange); }
+        .route-step { position: relative; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--light-green); }
+        .route-step:last-child { margin-bottom: 0; border-bottom: none; }
+
+        /* Rota Listesi Pati İkonları */
+        .route-step::before {
+            content: ''; position: absolute; left: -26px; top: 2px; width: 16px; height: 16px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 512 512" fill="%23F4A261" xmlns="http://www.w3.org/2000/svg"><path d="M226.5 92.9c14.3 42.9-.3 86.4-32.6 96.8s-70.3-15.8-84.6-58.7.3-86.4 32.6-96.8 70.3 15.8 84.6 58.7zm138.8-58.7c-14.3-42.9-52.3-69.1-84.6-58.7s-46.9 53.9-32.6 96.8 52.3 69.1 84.6 58.7 46.9-53.9 32.6-96.8zm116.1 123.6c-9.7-41.5-45.7-62.8-80.4-47.5-34.7 15.3-54.9 61.5-45.2 103 9.7 41.5 45.7 62.8 80.4 47.5 34.7-15.3 54.9-61.5 45.2-103zm-162.7 85.3c-23.7-21.7-56-11.4-78.5-7.7-18.7 3.1-41.9 6.2-64 1-27-6.5-62-36.4-86.6-43.2-34-9.3-70.9 9.8-83.3 43-12.7 34 8 74.3 35.8 98.7 31 27 75.3 43.1 113.8 61.8 19 9.2 40 19.3 62 26 25 7.6 55.4 12.3 84.6 9.8 45.4-3.8 92.5-23.8 116.5-61.4 19.8-31 16-72.2-6.5-100-11-13.8-24.9-24.3-41-31.5-14.7-6.5-32.2-5.7-46.8-5.3-25.1.8-51.1 5.9-66.2 8.3-5.3.8-10.9 1.1-16 1-13.2-.3-24.9-6.4-32.7-16.7z"/></svg>');
+            background-size: contain; background-repeat: no-repeat;
+        }
+        .route-step.destination::before {
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 512 512" fill="%234A7C59" xmlns="http://www.w3.org/2000/svg"><path d="M226.5 92.9c14.3 42.9-.3 86.4-32.6 96.8s-70.3-15.8-84.6-58.7.3-86.4 32.6-96.8 70.3 15.8 84.6 58.7zm138.8-58.7c-14.3-42.9-52.3-69.1-84.6-58.7s-46.9 53.9-32.6 96.8 52.3 69.1 84.6 58.7 46.9-53.9 32.6-96.8zm116.1 123.6c-9.7-41.5-45.7-62.8-80.4-47.5-34.7 15.3-54.9 61.5-45.2 103 9.7 41.5 45.7 62.8 80.4 47.5 34.7-15.3 54.9-61.5 45.2-103zm-162.7 85.3c-23.7-21.7-56-11.4-78.5-7.7-18.7 3.1-41.9 6.2-64 1-27-6.5-62-36.4-86.6-43.2-34-9.3-70.9 9.8-83.3 43-12.7 34 8 74.3 35.8 98.7 31 27 75.3 43.1 113.8 61.8 19 9.2 40 19.3 62 26 25 7.6 55.4 12.3 84.6 9.8 45.4-3.8 92.5-23.8 116.5-61.4 19.8-31 16-72.2-6.5-100-11-13.8-24.9-24.3-41-31.5-14.7-6.5-32.2-5.7-46.8-5.3-25.1.8-51.1 5.9-66.2 8.3-5.3.8-10.9 1.1-16 1-13.2-.3-24.9-6.4-32.7-16.7z"/></svg>');
+            width: 20px; height: 20px; left: -28px;
+        }
+
+        .step-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: var(--primary-green); }
+        .step-dist { color: var(--primary-orange); font-size: 12px; font-weight: 700; }
+        .step-items { font-size: 12px; color: var(--text-gray); margin-top: 4px; font-weight: 500;}
+        .dispatch-btn { background-color: var(--primary-orange); color: var(--white); border: none; padding: 14px 20px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; width: 100%; box-shadow: 0 4px 15px rgba(244, 162, 97, 0.4);}
+        .dispatch-btn:hover { background-color: var(--hover-orange); transform: translateY(-2px);}
+    </style>
+</head>
+<body>
+
+<!-- SVG DEFS İÇİN GİZLİ ALAN (PATİ İZİ) -->
+<svg width="0" height="0" style="position:absolute;">
+    <defs>
+        <path id="paw-svg" d="M226.5 92.9c14.3 42.9-.3 86.4-32.6 96.8s-70.3-15.8-84.6-58.7.3-86.4 32.6-96.8 70.3 15.8 84.6 58.7zm138.8-58.7c-14.3-42.9-52.3-69.1-84.6-58.7s-46.9 53.9-32.6 96.8 52.3 69.1 84.6 58.7 46.9-53.9 32.6-96.8zm116.1 123.6c-9.7-41.5-45.7-62.8-80.4-47.5-34.7 15.3-54.9 61.5-45.2 103 9.7 41.5 45.7 62.8 80.4 47.5 34.7-15.3 54.9-61.5 45.2-103zm-162.7 85.3c-23.7-21.7-56-11.4-78.5-7.7-18.7 3.1-41.9 6.2-64 1-27-6.5-62-36.4-86.6-43.2-34-9.3-70.9 9.8-83.3 43-12.7 34 8 74.3 35.8 98.7 31 27 75.3 43.1 113.8 61.8 19 9.2 40 19.3 62 26 25 7.6 55.4 12.3 84.6 9.8 45.4-3.8 92.5-23.8 116.5-61.4 19.8-31 16-72.2-6.5-100-11-13.8-24.9-24.3-41-31.5-14.7-6.5-32.2-5.7-46.8-5.3-25.1.8-51.1 5.9-66.2 8.3-5.3.8-10.9 1.1-16 1-13.2-.3-24.9-6.4-32.7-16.7z" />
+    </defs>
+</svg>
+
+<!-- SİDEBAR -->
+<aside class="sidebar">
+    <div class="logo-area">
+        <h1>PawCycle AI</h1>
+        <p>Zero Waste, Warm Shelters</p>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item active" onclick="switchTab('upload', this)">Upload Donation</li>
+        <li class="nav-item" onclick="switchTab('dashboard', this)">Impact Dashboard</li>
+        <li class="nav-item" onclick="switchTab('rewards', this)">My Rewards</li>
+        <li class="nav-item" onclick="switchTab('routing', this)">Smart Routing (Admin)</li>
+    </ul>
+
+    <!-- YUVA VE HAYVAN SİLÜETİ SVG (SOL ALT) -->
+    <div class="sidebar-footer">
+        <svg class="shelter-graphic" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Barınak / Çatı -->
+            <path d="M10 55 L60 15 L110 55" fill="none" stroke="#F4A261" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="25" y="55" width="70" height="40" fill="none" stroke="#FDF3EB" stroke-width="4" rx="4"/>
+            <path d="M45 95 L45 65 C45 55 75 55 75 65 L75 95" fill="none" stroke="#F4A261" stroke-width="4"/>
+
+            <!-- Köpek Silüeti -->
+            <path d="M27 95 Q27 82 35 80 Q43 82 43 95 Z" fill="#F4A261"/> <!-- Gövde -->
+            <ellipse cx="28.5" cy="74" rx="2.6" ry="5" transform="rotate(15 28.5 74)" fill="#E78A43"/> <!-- Sol kulak -->
+            <ellipse cx="41.5" cy="74" rx="2.6" ry="5" transform="rotate(-15 41.5 74)" fill="#E78A43"/> <!-- Sağ kulak -->
+            <circle cx="35" cy="73" r="6" fill="#F4A261"/> <!-- Kafa -->
+            <ellipse cx="35" cy="76" rx="3" ry="2.2" fill="#FDF3EB"/> <!-- Burun bölgesi -->
+            <circle cx="35" cy="75.3" r="0.9" fill="#4A7C59"/> <!-- Burun -->
+            <circle cx="32.6" cy="72" r="0.8" fill="#4A7C59"/> <!-- Sol göz -->
+            <circle cx="37.4" cy="72" r="0.8" fill="#4A7C59"/> <!-- Sağ göz -->
+
+            <!-- Kedi Silüeti -->
+            <circle cx="85" cy="80" r="5" fill="#E8F0EA"/> <!-- Kafa -->
+            <path d="M80 95 L85 80 L90 95 Z" fill="#E8F0EA"/> <!-- Gövde -->
+            <path d="M81 78 L82 72 L85 76 L88 72 L89 78 Z" fill="#E8F0EA"/> <!-- Kulaklar -->
+        </svg>
+        <p>Protecting Paws,<br>Saving the Planet 🌍</p>
+    </div>
+</aside>
+
+<!-- ANA İÇERİK -->
+<main class="main-content">
+
+    <!-- SAYFA 1: UPLOAD -->
+    <div id="upload" class="page-section active">
+        <div class="page-header">
+            <h2>Upload Donation</h2>
+            <p>Upload a photo of your unused materials. Our Vision AI will instantly analyze its thermal properties.</p>
+        </div>
+
+        <div class="upload-area" onclick="alert('Sample image uploaded! Vision AI graded insulation & volume.')">
+            <div class="upload-icon">📸</div>
+            <h3>Drag & Drop your photo here</h3>
+            <p style="color: var(--text-gray);">or click to browse files (JPEG, PNG)</p>
+        </div>
+
+        <div class="ai-card">
+            <div class="ai-card-header">
+                <h3>✨ Vision AI Analysis Complete</h3>
+            </div>
+            <div class="ai-card-body">
+                <!-- Sol: Örnek mont görseli -->
+                <div class="item-preview">
+                    <svg viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sample winter puffer coat">
+                        <!-- Kollar -->
+                        <path d="M62 70 L22 150 Q18 162 30 166 L48 170 Q58 172 62 162 L88 100 Z" fill="#E78A43"/>
+                        <path d="M158 70 L198 150 Q202 162 190 166 L172 170 Q162 172 158 162 L132 100 Z" fill="#E78A43"/>
+                        <!-- Gövde -->
+                        <path d="M62 62 Q110 48 158 62 L164 205 Q110 218 56 205 Z" fill="#F4A261"/>
+                        <!-- Kapitone şeritler -->
+                        <path d="M59 100 Q110 110 161 100 M58 135 Q110 145 162 135 M57 170 Q110 180 163 170" stroke="#E78A43" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <!-- Yaka / Kapüşon -->
+                        <path d="M76 62 Q110 24 144 62 Q110 80 76 62 Z" fill="#4A7C59"/>
+                        <path d="M92 60 Q110 44 128 60" stroke="#E8F0EA" stroke-width="2" fill="none" opacity="0.6"/>
+                        <!-- Fermuar -->
+                        <line x1="110" y1="72" x2="110" y2="211" stroke="#FDF3EB" stroke-width="3" stroke-dasharray="4 3"/>
+                        <!-- Manşetler -->
+                        <path d="M26 156 L50 164" stroke="#4A7C59" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M194 156 L170 164" stroke="#4A7C59" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                    <div class="item-caption">Sample item · Winter Puffer Coat</div>
+                </div>
+
+                <!-- Sağ: Analiz değerleri -->
+                <div class="ai-details">
+                    <div class="ai-card-content">
+                        <div class="ai-stat">
+                            <span class="stat-label">Detected Material</span>
+                            <span class="stat-value">Polyester Shell + Down/Fiber Fill</span>
+                        </div>
+                        <div class="ai-stat">
+                            <span class="stat-label">Thermal Insulation Score</span>
+                            <span class="stat-value highlight-green">9.0 / 10 (Very High)</span>
+                        </div>
+                        <div class="ai-stat">
+                            <span class="stat-label">Animal Safety Check</span>
+                            <span class="stat-value badge-safe">Approved (Non-Toxic)</span>
+                        </div>
+                        <div class="ai-stat">
+                            <span class="stat-label">AI Decision / Next Step</span>
+                            <span class="stat-value" style="color: var(--primary-orange); font-weight: 600;">Queued for Winter Dog Bed</span>
+                        </div>
+                    </div>
+
+                    <div class="carbon-panel">
+                        <div class="carbon-box">
+                            <span class="stat-label">Embodied Carbon</span>
+                            <span class="carbon-num">24.6 kg</span>
+                            <span class="carbon-sub">CO₂e to produce</span>
+                        </div>
+                        <div class="carbon-box">
+                            <span class="stat-label">Avoided by Upcycling</span>
+                            <span class="carbon-num green">8.4 kg</span>
+                            <span class="carbon-sub">CO₂e vs. landfill + new bed</span>
+                        </div>
+                        <div class="carbon-box">
+                            <span class="stat-label">Workshop Output</span>
+                            <span class="carbon-num small">1 Dog Bed (M)<br>+ 2 Chew Toys</span>
+                            <span class="carbon-sub">from 1 coat</span>
+                        </div>
+                    </div>
+                    <p class="estimate-note">* Sample values — final figures are estimated by the AI per item.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAYFA 2: DASHBOARD VE GALERİ -->
+    <div id="dashboard" class="page-section">
+        <div class="page-header">
+            <h2>Impact Dashboard</h2>
+            <p>Track the real-world climate impact and see the upcycled shelters you've helped build.</p>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="stat-card">
+                <div class="stat-title">Avoided CO₂ Emissions</div>
+                <div class="stat-number">42.5 kg</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Sheltered Animals</div>
+                <div class="stat-number" style="color: var(--primary-orange);">14 Lives</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Earned PawPoints</div>
+                <div class="stat-number">350 pts</div>
+            </div>
+        </div>
+
+        <!-- Örnek Ürün Galerisi -->
+        <div class="gallery-section">
+            <h3 class="gallery-title">🐾 Recent Upcycled Creations</h3>
+            <div class="gallery-grid">
+                <!-- Kışlık barınak -->
+                <div class="gallery-card">
+                    <img src="shelter.jpg" alt="Winter Thermal Shelter" class="gallery-img">
+                    <div class="gallery-tag">Winter Thermal Shelter (Fleece + Foam)</div>
+                </div>
+                <!-- Su istasyonu -->
+                <div class="gallery-card">
+                    <img src="water-station.jpg" alt="Hydration Station" class="gallery-img">
+                    <div class="gallery-tag">Summer Hydration Station (Recycled Bottle)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAYFA 3: REWARDS -->
+    <div id="rewards" class="page-section">
+        <div class="page-header">
+            <h2>My Rewards</h2>
+            <p>Redeem your PawPoints for eco-friendly discounts and shelter donations.</p>
+        </div>
+
+        <div class="balance-container">
+            🌟 Current Balance: <span id="points-balance">350</span> PawPoints
+        </div>
+
+        <div class="rewards-grid">
+            <div class="reward-card">
+                <div class="reward-logo">☕</div>
+                <div class="reward-title">Coffee Shop 20% Off</div>
+                <div class="reward-desc">Get a 20% discount on any eco-friendly reusable cup coffee at partner cafes.</div>
+                <button class="reward-btn" onclick="redeemReward(100, this)">Redeem (100 pts)</button>
+            </div>
+            <div class="reward-card">
+                <div class="reward-logo">🦴</div>
+                <div class="reward-title">1 Kg Shelter Food</div>
+                <div class="reward-desc">Donate 1 kg of premium pet food directly to the local municipal shelter.</div>
+                <button class="reward-btn" onclick="redeemReward(200, this)">Donate (200 pts)</button>
+            </div>
+            <div class="reward-card">
+                <div class="reward-logo">🩺</div>
+                <div class="reward-title">Vet Care Voucher</div>
+                <div class="reward-desc">Claim a 15% discount voucher for your next veterinary clinic visit.</div>
+                <button class="reward-btn" onclick="redeemReward(150, this)">Redeem (150 pts)</button>
+            </div>
+            <div class="reward-card">
+                <div class="reward-logo">🛋️</div>
+                <div class="reward-title">Furniture Store 10% Off</div>
+                <div class="reward-desc">Get a 10% discount voucher on second-hand and sustainable pieces at partner furniture stores.</div>
+                <button class="reward-btn" onclick="redeemReward(250, this)">Redeem (250 pts)</button>
+            </div>
+            <div class="reward-card">
+                <div class="reward-logo">➕</div>
+                <div class="reward-title">Other Rewards</div>
+                <div class="reward-desc">Looking for something else? Browse more partner offers or suggest a reward.</div>
+                <button class="reward-btn reward-btn-outline" onclick="otherRewards()">Other</button>
+            </div>
+        </div>
+
+        <!-- Sponsor Şirketler (sağ alt) -->
+        <div class="sponsors-wrap">
+            <div class="sponsors-box">
+                <h4 class="sponsors-title">🤝 Sponsor Companies</h4>
+                <div class="sponsor-list">
+                    <span class="sponsor-chip">🛋️ Furniture Partner</span>
+                    <span class="sponsor-chip">☕ Coffee Partner</span>
+                    <span class="sponsor-chip">🩺 Vet Clinic Partner</span>
+                    <span class="sponsor-chip">🐾 Pet Food Partner</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAYFA 4: SMART ROUTING (PATİ İZİ HARİTASI) -->
+    <div id="routing" class="page-section">
+        <div class="page-header">
+            <h2>Smart Routing (Admin)</h2>
+            <p>AI-generated minimum-emission routes triggered only when net carbon savings exceed vehicle fuel.</p>
+        </div>
+
+        <div class="carbon-alert">
+            <span>✅ <strong>Net Carbon Gain (+40.5 kg CO₂e):</strong> Batch threshold reached — Van route ready.</span>
+            <span class="carbon-ratio-badge">5.4x Net Carbon Ratio</span>
+        </div>
+
+        <div class="routing-grid">
+            <!-- Sol Harita: Harita silüeti + pati izli güzergah -->
+            <div class="map-card">
+                <h3 class="card-section-title">📍 VRP Paw-Route Preview</h3>
+                <div class="map-placeholder">
+                    <div class="map-badge">Google Maps API · Min-Emission Path</div>
+
+                    <svg class="map-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+                        <!-- HARİTA SİLÜETİ -->
+                        <rect width="400" height="180" fill="#EEF4F0"/>
+                        <path d="M0 28 Q45 8 95 24 T185 18 T295 14 T400 30 L400 180 L0 180 Z" fill="#E1ECE4"/>
+                        <path d="M-10 165 Q70 118 145 150 T285 128 T410 152" fill="none" stroke="#CDE2D6" stroke-width="16" stroke-linecap="round"/>
+                        <ellipse cx="228" cy="96" rx="34" ry="16" fill="#D3E6D8"/>
+                        <ellipse cx="78" cy="62" rx="26" ry="13" fill="#D3E6D8"/>
+                        <!-- Sokaklar -->
+                        <g stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.95">
+                            <path d="M0 100 L400 92"/>
+                            <path d="M0 55 L400 70"/>
+                            <path d="M120 0 L135 180"/>
+                            <path d="M250 0 L238 180"/>
+                            <path d="M330 0 L345 180"/>
+                            <path d="M40 0 L55 180"/>
+                        </g>
+                        <!-- Bina blokları -->
+                        <g fill="#D7E6DB">
+                            <rect x="62" y="108" width="40" height="16" rx="3"/>
+                            <rect x="145" y="104" width="36" height="14" rx="3"/>
+                            <rect x="262" y="104" width="46" height="14" rx="3"/>
+                            <rect x="352" y="104" width="34" height="16" rx="3"/>
+                            <rect x="140" y="30" width="34" height="14" rx="3"/>
+                            <rect x="296" y="30" width="30" height="14" rx="3"/>
+                            <rect x="60" y="30" width="30" height="14" rx="3"/>
+                        </g>
+                        <!-- PATİ İZLERİ İLE GÜZERGAH -->
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.55" transform="translate(92.4 121.5) rotate(61) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.61" transform="translate(105.2 100.8) rotate(62) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.66" transform="translate(130.1 101.2) rotate(63) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.72" transform="translate(146.4 79.7) rotate(65) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.78" transform="translate(210.4 67.9) rotate(72) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.83" transform="translate(228.3 50.0) rotate(75) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.89" transform="translate(252.9 57.2) rotate(82) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="0.94" transform="translate(317.2 65.6) rotate(134) scale(0.05) translate(-256 -256)"/>
+                        <use href="#paw-svg" fill="#F4A261" opacity="1.0" transform="translate(321.9 88.8) rotate(141) scale(0.05) translate(-256 -256)"/>
+                        <!-- DURAKLAR -->
+                        <circle cx="50" cy="138" r="17" fill="#FFFFFF"/>
+                        <use href="#paw-svg" fill="#F4A261" transform="translate(50 138) scale(0.06) translate(-256 -256)"/>
+                        <circle cx="175" cy="74" r="17" fill="#FFFFFF"/>
+                        <use href="#paw-svg" fill="#F4A261" transform="translate(175 74) scale(0.06) translate(-256 -256)"/>
+                        <circle cx="285" cy="52" r="17" fill="#FFFFFF"/>
+                        <use href="#paw-svg" fill="#F4A261" transform="translate(285 52) scale(0.06) translate(-256 -256)"/>
+                        <circle cx="352" cy="118" r="19" fill="#FFFFFF" stroke="#4A7C59" stroke-width="2"/>
+                        <use href="#paw-svg" fill="#4A7C59" transform="translate(352 118) scale(0.066) translate(-256 -256)"/>
+                        <!-- Etiketler -->
+                        <g font-size="11" font-weight="700" fill="#4A7C59" stroke="#FFFFFF" stroke-width="3" paint-order="stroke" font-family="Poppins, sans-serif">
+                            <text x="22" y="170">1. Pharmacy</text>
+                            <text x="138" y="108">2. Campus Dorm</text>
+                            <text x="246" y="28">3. Residential</text>
+                            <text x="388" y="152" text-anchor="end">🏁 Micro-Workshop</text>
+                        </g>
+                    </svg>
+
+                    <div class="map-footer-stats">
+                        <span>Distance: <strong>4.8 km</strong></span>
+                        <span>Vehicle CO₂: <strong>1.2 kg</strong></span>
+                        <span style="color: var(--primary-green);">Avoided CO₂: <strong>41.7 kg</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Liste -->
+            <div class="route-list-card">
+                <h3 class="card-section-title">🚚 Optimized Pickup Sequence</h3>
+                <ul class="route-timeline">
+                    <li class="route-step">
+                        <div class="step-top">
+                            <span>1. Merkez Pharmacy</span>
+                            <span class="step-dist">0.0 km</span>
+                        </div>
+                        <div class="step-items">4x Styrofoam Boxes (0.32 m³)</div>
+                    </li>
+                    <li class="route-step">
+                        <div class="step-top">
+                            <span>2. University Campus Dorm A</span>
+                            <span class="step-dist">+1.4 km</span>
+                        </div>
+                        <div class="step-items">6x Winter Fleece & Coats</div>
+                    </li>
+                    <li class="route-step">
+                        <div class="step-top">
+                            <span>3. Yeşilköy Apt. Point</span>
+                            <span class="step-dist">+1.9 km</span>
+                        </div>
+                        <div class="step-items">2x 19L Plastic Jugs + Wool Blanket</div>
+                    </li>
+                    <li class="route-step destination">
+                        <div class="step-top">
+                            <span style="color: var(--primary-green);">4. Shelter Micro-Workshop</span>
+                            <span class="step-dist" style="color: var(--primary-green);">+1.5 km (Drop-off)</span>
+                        </div>
+                        <div class="step-items">Output: 2 Winter Shelters + 1 Hydration St.</div>
+                    </li>
+                </ul>
+                <button class="dispatch-btn" onclick="dispatchRoute(this)">Confirm & Dispatch Vehicle</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- SAYFA GEÇİŞ VE ETKİLEŞİM JS -->
+<script>
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        if (element) {
+            element.classList.add('active');
+        }
+    }
+
+    function redeemReward(cost, button) {
+        const balanceEl = document.getElementById('points-balance');
+        let current = parseInt(balanceEl.textContent, 10);
+        if (current >= cost) {
+            balanceEl.textContent = current - cost;
+            button.textContent = "✓ Claimed (Code: PAWS)";
+            button.style.backgroundColor = "#4A7C59";
+            button.disabled = true;
+        } else {
+            alert("Not enough PawPoints!");
+        }
+    }
+
+    function dispatchRoute(button) {
+        button.textContent = "🐾 Route Dispatched to Driver";
+        button.style.backgroundColor = "#4A7C59";
+    }
+
+    function otherRewards() {
+        alert("More partner rewards are coming soon! Have a suggestion? Let us know.");
+    }
+</script>
+</body>
+</html>
