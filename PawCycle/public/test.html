@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PawCycle AI Testi</title>
+<style>
+  body{font-family:Poppins,Arial,sans-serif;max-width:520px;margin:30px auto;padding:0 16px;color:#2b2b2b}
+  button{background:#4A7C59;color:#fff;border:0;padding:10px 18px;border-radius:10px;cursor:pointer;font-size:15px}
+  input{margin:8px 0}
+  #pcResult{margin-top:18px;background:#f4f8f5;padding:14px;border-radius:12px}
+  img{max-width:100%;border-radius:10px;margin-top:10px}
+</style>
+</head>
+<body>
+<h2>🐾 PawCycle AI: Fotoğraf Analizi</h2>
+<input type="file" id="pcPhoto" accept="image/*"><br>
+<input type="number" id="pcWeight" placeholder="Ağırlık kg (isteğe bağlı)" step="0.1" min="0"><br>
+<button onclick="analyzePhoto()">🤖 AI ile analiz et</button>
+<img id="pcPreview" alt="">
+<div id="pcResult">Sonuç burada görünecek.</div>
+
+<script>
+const PC_API = "https://pawcycle-ai.hebrarkar.workers.dev";
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function toDataURL(file, max = 768) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width * k; c.height = img.height * k;
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      resolve(c.toDataURL("image/jpeg", 0.8));
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function analyzePhoto() {
+  const file = document.getElementById("pcPhoto").files[0];
+  const out = document.getElementById("pcResult");
+  if (!file) { out.textContent = "Önce bir fotoğraf seçin."; return; }
+  out.textContent = "⏳ Analiz ediliyor...";
+  try {
+    const image = await toDataURL(file);
+    document.getElementById("pcPreview").src = image;
+    const weightKg = parseFloat(document.getElementById("pcWeight").value) || 0;
+    const res = await fetch(PC_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image, weightKg }),
+    });
+    const d = await res.json();
+    if (d.error) { out.textContent = d.error; return; }
+    out.innerHTML = `
+      <h3>${esc(d.item)}</h3>
+      <p><b>Malzemeler:</b> ${d.materials.map(m => esc(m.name) + " %" + m.percent).join(", ")}</p>
+      <p><b>Tahmini ağırlık:</b> ${d.weight_kg[0]}–${d.weight_kg[1]} kg</p>
+      <p><b>Karbon yükü:</b> ${d.co2_total_min}–${d.co2_total_max} kg CO₂e</p>
+      <p><b>Dönüşüm önerisi:</b> ${esc(d.upcycle)}</p>
+      <small>Tahmini değerdir, ölçü girerek netleştirebilirsiniz.</small>`;
+  } catch (e) {
+    out.textContent = "Bağlantı hatası: " + e.message;
+  }
+}
+</script>
+</body>
+</html>
