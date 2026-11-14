@@ -375,31 +375,27 @@
             <p style="color: var(--text-gray);">or click to browse files (JPEG, PNG)</p>
         </div>
 
-        <div class="ai-card">
+                <div class="ai-card">
             <div class="ai-card-header">
-                <h3>✨ Vision AI Analysis Complete</h3>
+                <h3 id="ai-status">✨ Vision AI Analysis Complete</h3>
             </div>
             <div class="ai-card-body">
-                <!-- Sol: Örnek mont görseli -->
+                <!-- Sol: Ürün görseli (yüklenince fotoğrafla değişir) -->
                 <div class="item-preview">
+                    <div id="item-preview-box" style="width:100%;display:flex;justify-content:center;">
                     <svg viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sample winter puffer coat">
-                        <!-- Kollar -->
                         <path d="M62 70 L22 150 Q18 162 30 166 L48 170 Q58 172 62 162 L88 100 Z" fill="#E78A43"/>
                         <path d="M158 70 L198 150 Q202 162 190 166 L172 170 Q162 172 158 162 L132 100 Z" fill="#E78A43"/>
-                        <!-- Gövde -->
                         <path d="M62 62 Q110 48 158 62 L164 205 Q110 218 56 205 Z" fill="#F4A261"/>
-                        <!-- Kapitone şeritler -->
                         <path d="M59 100 Q110 110 161 100 M58 135 Q110 145 162 135 M57 170 Q110 180 163 170" stroke="#E78A43" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        <!-- Yaka / Kapüşon -->
                         <path d="M76 62 Q110 24 144 62 Q110 80 76 62 Z" fill="#4A7C59"/>
                         <path d="M92 60 Q110 44 128 60" stroke="#E8F0EA" stroke-width="2" fill="none" opacity="0.6"/>
-                        <!-- Fermuar -->
                         <line x1="110" y1="72" x2="110" y2="211" stroke="#FDF3EB" stroke-width="3" stroke-dasharray="4 3"/>
-                        <!-- Manşetler -->
                         <path d="M26 156 L50 164" stroke="#4A7C59" stroke-width="6" stroke-linecap="round"/>
                         <path d="M194 156 L170 164" stroke="#4A7C59" stroke-width="6" stroke-linecap="round"/>
                     </svg>
-                    <div class="item-caption">Sample item · Winter Puffer Coat</div>
+                    </div>
+                    <div class="item-caption" id="item-caption">Sample item · Winter Puffer Coat</div>
                 </div>
 
                 <!-- Sağ: Analiz değerleri -->
@@ -407,40 +403,40 @@
                     <div class="ai-card-content">
                         <div class="ai-stat">
                             <span class="stat-label">Detected Material</span>
-                            <span class="stat-value">Polyester Shell + Down/Fiber Fill</span>
+                            <span class="stat-value" id="ai-material">Polyester Shell + Down/Fiber Fill</span>
                         </div>
                         <div class="ai-stat">
                             <span class="stat-label">Thermal Insulation Score</span>
-                            <span class="stat-value highlight-green">9.0 / 10 (Very High)</span>
+                            <span class="stat-value highlight-green" id="ai-insulation">9.0 / 10 (Very High)</span>
                         </div>
                         <div class="ai-stat">
                             <span class="stat-label">Animal Safety Check</span>
-                            <span class="stat-value badge-safe">Approved (Non-Toxic)</span>
+                            <span class="stat-value badge-safe" id="ai-safety">Approved (Non-Toxic)</span>
                         </div>
                         <div class="ai-stat">
                             <span class="stat-label">AI Decision / Next Step</span>
-                            <span class="stat-value" style="color: var(--primary-orange); font-weight: 600;">Queued for Winter Dog Bed</span>
+                            <span class="stat-value" id="ai-decision" style="color: var(--primary-orange); font-weight: 600;">Queued for Winter Dog Bed</span>
                         </div>
                     </div>
 
                     <div class="carbon-panel">
                         <div class="carbon-box">
                             <span class="stat-label">Embodied Carbon</span>
-                            <span class="carbon-num">24.6 kg</span>
+                            <span class="carbon-num" id="ai-embodied">24.6 kg</span>
                             <span class="carbon-sub">CO₂e to produce</span>
                         </div>
                         <div class="carbon-box">
                             <span class="stat-label">Avoided by Upcycling</span>
-                            <span class="carbon-num green">8.4 kg</span>
+                            <span class="carbon-num green" id="ai-avoided">8.4 kg</span>
                             <span class="carbon-sub">CO₂e vs. landfill + new bed</span>
                         </div>
                         <div class="carbon-box">
                             <span class="stat-label">Workshop Output</span>
-                            <span class="carbon-num small">1 Dog Bed (M)<br>+ 2 Chew Toys</span>
-                            <span class="carbon-sub">from 1 coat</span>
+                            <span class="carbon-num small" id="ai-output">1 Dog Bed (M)<br>+ 2 Chew Toys</span>
+                            <span class="carbon-sub">from this item</span>
                         </div>
                     </div>
-                    <p class="estimate-note">* Sample values — final figures are estimated by the AI per item.</p>
+                    <p class="estimate-note" id="ai-note">* Sample values — upload a photo to get a real AI estimate.</p>
                 </div>
             </div>
         </div>
@@ -701,6 +697,80 @@
     function otherRewards() {
         alert("More partner rewards are coming soon! Have a suggestion? Let us know.");
     }
+    
+    // ---------- AI FOTOĞRAF ANALİZİ ----------
+    const PC_API = "https://pawcycle-ai.hebrarkar.workers.dev";
+
+    function esc(s) {
+        return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    }
+
+    function toDataURL(file, max = 768) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const k = Math.min(1, max / Math.max(img.width, img.height));
+                const c = document.createElement("canvas");
+                c.width = img.width * k; c.height = img.height * k;
+                c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+                resolve(c.toDataURL("image/jpeg", 0.8));
+            };
+            img.src = URL.createObjectURL(file);
+        });
+    }
+
+    function setText(id, html) { document.getElementById(id).innerHTML = html; }
+
+    async function handlePhoto(file) {
+        if (!file) return;
+        const title = document.getElementById("upload-title");
+        const status = document.getElementById("ai-status");
+        title.textContent = "⏳ Vision AI is analyzing your photo...";
+        status.textContent = "⏳ Vision AI analyzing...";
+        try {
+            const image = await toDataURL(file);
+            document.getElementById("item-preview-box").innerHTML =
+                '<img src="' + image + '" alt="Uploaded item" style="width:100%;max-width:190px;border-radius:12px;box-shadow:0 6px 10px rgba(0,0,0,0.12);">';
+
+            const res = await fetch(PC_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image })
+            });
+            const d = await res.json();
+            if (d.error) throw new Error(d.error);
+
+            const score = d.insulation;
+            const label = score >= 8 ? "Very High" : score >= 5 ? "Good" : "Low";
+            const avg = (d.co2_total_min + d.co2_total_max) / 2;
+            const avoided = (avg * 0.34).toFixed(1); // demo varsayımı
+
+            setText("item-caption", "Your upload · " + esc(d.item));
+            setText("ai-material", d.materials.map(m => esc(m.name) + " " + m.percent + "%").join(" + "));
+            setText("ai-insulation", score + " / 10 (" + label + ")");
+            setText("ai-safety", d.animal_safe ? "Approved (Non-Toxic)" : "Needs Manual Review");
+            setText("ai-decision", "Queued for: " + esc(d.output));
+            setText("ai-embodied", d.co2_total_min + "–" + d.co2_total_max + " kg");
+            setText("ai-avoided", avoided + " kg");
+            setText("ai-output", esc(d.output));
+            setText("ai-note", "* AI estimate from a photo (weight " + d.weight_kg[0] + "–" + d.weight_kg[1] + " kg). Avoided CO₂ is a demo estimate (~34% of embodied carbon).");
+
+            status.textContent = "✨ Vision AI Analysis Complete";
+            title.textContent = "Photo analyzed! Click to upload another one";
+        } catch (e) {
+            status.textContent = "⚠️ Analysis failed";
+            title.textContent = "Something went wrong, please try again";
+            setText("ai-note", "* " + esc(e.message));
+        }
+    }
+
+    // Sürükle-bırak desteği
+    const dropZone = document.getElementById("drop-zone");
+    dropZone.addEventListener("dragover", e => { e.preventDefault(); });
+    dropZone.addEventListener("drop", e => {
+        e.preventDefault();
+        handlePhoto(e.dataTransfer.files[0]);
+    });
 </script>
 </body>
 </html>
