@@ -369,9 +369,10 @@
             <p>Upload a photo of your unused materials. Our Vision AI will instantly analyze its thermal properties.</p>
         </div>
 
-        <div class="upload-area" onclick="alert('Sample image uploaded! Vision AI graded insulation & volume.')">
+                <div class="upload-area" id="drop-zone" onclick="document.getElementById('photo-input').click()">
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(this.files[0])">
             <div class="upload-icon">📸</div>
-            <h3>Drag & Drop your photo here</h3>
+            <h3 id="upload-title">Drag & Drop your photo here</h3>
             <p style="color: var(--text-gray);">or click to browse files (JPEG, PNG)</p>
         </div>
 
